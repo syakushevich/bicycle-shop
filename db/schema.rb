@@ -14,23 +14,24 @@ ActiveRecord::Schema[7.1].define(version: 4) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "bicycle_parts", force: :cascade do |t|
-    t.bigint "bicycle_id", null: false
+  create_table "custom_product_parts", force: :cascade do |t|
+    t.bigint "custom_product_id", null: false
     t.bigint "part_id", null: false
     t.bigint "part_option_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["bicycle_id"], name: "index_bicycle_parts_on_bicycle_id"
-    t.index ["part_id"], name: "index_bicycle_parts_on_part_id"
-    t.index ["part_option_id"], name: "index_bicycle_parts_on_part_option_id"
+    t.index ["custom_product_id"], name: "index_custom_product_parts_on_custom_product_id"
+    t.index ["part_id"], name: "index_custom_product_parts_on_part_id"
+    t.index ["part_option_id"], name: "index_custom_product_parts_on_part_option_id"
   end
 
-  create_table "bicycles", force: :cascade do |t|
+  create_table "custom_products", force: :cascade do |t|
     t.string "name", null: false
-    t.bigint "catalog_id"
+    t.string "type", null: false
+    t.bigint "catalog_product_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["catalog_id"], name: "index_bicycles_on_catalog_id"
+    t.index ["catalog_product_id"], name: "index_custom_products_on_catalog_product_id"
   end
 
   create_table "part_options", force: :cascade do |t|
@@ -59,10 +60,10 @@ ActiveRecord::Schema[7.1].define(version: 4) do
     t.index ["catalog_id"], name: "index_products_on_catalog_id"
   end
 
-  add_foreign_key "bicycle_parts", "bicycles"
-  add_foreign_key "bicycle_parts", "part_options"
-  add_foreign_key "bicycle_parts", "parts"
-  add_foreign_key "bicycles", "products", column: "catalog_id"
+  add_foreign_key "custom_product_parts", "custom_products"
+  add_foreign_key "custom_product_parts", "part_options"
+  add_foreign_key "custom_product_parts", "parts"
+  add_foreign_key "custom_products", "products", column: "catalog_product_id"
   add_foreign_key "part_options", "parts"
   add_foreign_key "parts", "products"
   add_foreign_key "products", "products", column: "catalog_id"

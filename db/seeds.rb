@@ -40,7 +40,7 @@ bikes_data.each_with_index do |data, index|
                 .set_rim_color(data[:rim_color])
                 .set_chain(data[:chain])
     bike = builder.build
-    config = bike.bicycle_parts.includes(:part, :part_option)
+    config = bike.custom_product_parts.includes(:part, :part_option)
                  .map { |bp| [bp.part.part_key, bp.part_option.option] }
                  .to_h
     puts "Created Bicycle ##{bike.id} with configuration: #{config}"

@@ -5,11 +5,19 @@ class BicycleBuilder
     @parts_data = {}
   end
 
-  Catalog.instance.parts.pluck(:part_key).each do |part|
-    define_method("set_#{part}") do |value|
-      @parts_data[part.to_sym] = value
-      self
+  def method_missing(method, *args, &block)
+    method_name = method.to_s
+    if method_name.start_with?("set_")
+      part_name = method_name.sub("set_", "").to_sym
+      @parts_data[part_name] = args.first
+      return self
+    else
+      super
     end
+  end
+
+  def respond_to_missing?(method, include_private = false)
+    method.to_s.start_with?("set_") || super
   end
 
   def validate!
@@ -23,7 +31,6 @@ class BicycleBuilder
   def build
     validate!
 
-    # Look up the catalog record using the singleton method.
     catalog = Catalog.instance!
     raise "Catalog not found" unless catalog
 
@@ -32,7 +39,7 @@ class BicycleBuilder
     @parts_data.each do |part_key, option_value|
       catalog_part = catalog.parts.find_by!(part_key: part_key.to_s)
       catalog_option = catalog_part.part_options.find_by!(option: option_value)
-      bike.bicycle_parts.create!(part: catalog_part, part_option: catalog_option)
+      bike.custom_product_parts.create!(part: catalog_part, part_option: catalog_option)
     end
 
     bike
